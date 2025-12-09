@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ママとも助産院 アンケートフォーム</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Zen+Maru+Gothic:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        :root {
+            /* おしゃれなカラーパレット定義 */
+            --main-bg: #f9f8f6; /* 生成り色 */
+            --card-bg: #ffffff;
+            --text-color: #5a524c; /* 温かみのある焦げ茶 */
+            --accent-green: #8a9a5b; /* セージグリーン */
+            --accent-pink: #d8b4a0; /* ダスティピンク */
+            --input-bg: #fdfdfd;
+            --border-color: #e6e3de;
+        }
+
+        body {
+            font-family: 'Zen Maru Gothic', sans-serif;
+            background-color: var(--main-bg);
+            /* 背景のノイズテクスチャ */
+            background-image: 
+                linear-gradient(var(--main-bg), var(--main-bg)),
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 30px 15px;
+            line-height: 1.6;
+        }
+
+        /* フェードインアニメーション */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(90, 82, 76, 0.05);
+            width: 100%;
+            max-width: 600px;
+            padding: 40px;
+            box-sizing: border-box;
+            border: 1px solid #fff;
+            animation: fadeIn 0.8s ease-out;
+            position: relative;
+        }
+
+        /* 上部の装飾線 */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: repeating-linear-gradient(
+                45deg,
+                var(--accent-green),
+                var(--accent-green) 10px,
+                #fff 10px,
+                #fff 20px
+            );
+            border-radius: 12px 12px 0 0;
+            opacity: 0.5;
+        }
+
+        h1 {
+            font-family: 'Shippori Mincho', serif;
+            color: var(--text-color);
+            text-align: center;
+            font-size: 26px;
+            margin-bottom: 30px;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+        }
+
+        h1 span {
+            display: block;
+            font-size: 13px;
+            color: var(--accent-green);
+            margin-top: 5px;
+            font-family: 'Zen Maru Gothic', sans-serif;
+            font-weight: 400;
+            letter-spacing: 0.2em;
+        }
+
+        .label-group {
+            margin-bottom: 28px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: var(--text-color);
+            font-size: 15px;
+            letter-spacing: 0.05em;
+        }
+
+        /* 必須・任意バッジ */
+        .badge {
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 20px;
+            margin-left: 10px;
+            vertical-align: middle;
+            letter-spacing: 0.05em;
+        }
+        .badge-required {
+            background-color: #fff;
+            border: 1px solid var(--accent-pink);
+            color: var(--accent-pink);
+        }
+        .badge-optional {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            color: #999;
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        textarea {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 16px;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+            font-family: 'Zen Maru Gothic', sans-serif;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: var(--accent-green);
+            background-color: #fff;
+            outline: none;
+            box-shadow: 0 4px 12px rgba(138, 154, 91, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            line-height: 1.8;
+        }
+
+        /* 選択ボタンのデザイン */
+        .select-buttons {
+            display: flex;
+            flex-wrap: wrap; /* 折り返しを許可 */
+            gap: 10px;
+        }
+
+        .select-buttons button {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: #fff;
+            color: #888;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: 'Zen Maru Gothic', sans-serif;
+            transition: all 0.3s;
+            min-width: 80px; /* スマホで小さくなりすぎないように */
+        }
+
+        .select-buttons button:hover {
+            background-color: #fcfcfc;
+            border-color: #ccc;
+        }
+
+        .select-buttons button.active {
+            background-color: var(--accent-green);
+            color: white;
+            border-color: var(--accent-green);
+            box-shadow: 0 4px 10px rgba(138, 154, 91, 0.3);
+        }
+
+        /* 動的表示エリア */
+        .dynamic-area {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #fcfcfc;
+            border-radius: 8px;
+            border: 1px dashed var(--border-color);
+            display: none; /* デフォルト非表示 */
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .sub-label {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 5px;
+            display: block;
+        }
+        
+        .child-input-row {
+            margin-bottom: 10px;
+        }
+        .child-input-row:last-child {
+            margin-bottom: 0;
+        }
+
+        /* 送信ボタン */
+        .submit-button {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(135deg, var(--accent-green), #758654);
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 30px;
+            letter-spacing: 0.15em;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-family: 'Zen Maru Gothic', sans-serif;
+            box-shadow: 0 4px 15px rgba(117, 134, 84, 0.3);
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(117, 134, 84, 0.4);
+        }
+
+        .submit-button:active {
+            transform: translateY(0);
+        }
+
+        /* スマホ向けの微調整 */
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+                box-shadow: none;
+                border-radius: 0;
+            }
+            body {
+                padding: 0;
+                background-color: #fff;
+            }
+            .container::before {
+                display: none;
+            }
+            .select-buttons button {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>ママとも助産院<br><span>Enquete form</span></h1>
+
+        <div class="label-group">
+            <label>①お子様の人数<span class="badge badge-required">必須</span></label>
+            <div class="select-buttons" id="child-count-buttons">
+                <button type="button" onclick="selectChildCount(1, this)">1人</button>
+                <button type="button" onclick="selectChildCount(2, this)">2人</button>
+                <button type="button" onclick="selectChildCount(3, this)">3人</button>
+                <button type="button" onclick="selectChildCount(4, this)">4人</button>
+                <button type="button" onclick="selectChildCount(5, this)">5人</button>
+            </div>
+            
+            <div id="children-dates-area" class="dynamic-area">
+                </div>
+            <input type="hidden" id="selected_child_count">
+        </div>
+
+        <div class="label-group">
+            <label>②どこで当院を知りましたか？<span class="badge badge-required">必須</span></label>
+            <div class="select-buttons" id="source-buttons">
+                <button type="button" onclick="selectSource('知り合いからの紹介', this)">知り合いからの紹介</button>
+                <button type="button" onclick="selectSource('病院からの紹介', this)">病院からの紹介</button>
+                <button type="button" onclick="selectSource('行政からの紹介', this)">行政からの紹介</button>
+                <button type="button" onclick="selectSource('Googleマップで見つけた', this)">Googleマップで見つけた</button>
+                <button type="button" onclick="selectSource('ホームページを見た', this)">ホームページを見た</button>
+                <button type="button" onclick="selectSource('その他', this)">その他</button>
+            </div>
+            <input type="hidden" id="selected_source">
+
+            <div id="hospital_input_area" class="dynamic-area">
+                <label class="sub-label">②-1 病院名を教えてください<span class="badge badge-optional">任意</span></label>
+                <input type="text" id="hospital_name" placeholder="例：〇〇病院">
+            </div>
+
+            <div id="other_source_input_area" class="dynamic-area">
+                <label class="sub-label">②-2 何で知ったか教えてください<span class="badge badge-optional">任意</span></label>
+                <input type="text" id="other_source_detail" placeholder="詳細をご記入ください">
+            </div>
+        </div>
+
+        <div class="label-group">
+            <label>③どのような配信が届くと嬉しいですか？<span class="badge badge-optional">任意</span></label>
+            <textarea id="desired_content" placeholder="例：イベント情報、育児コラムなど"></textarea>
+        </div>
+
+        <div class="label-group">
+            <label>④助産師に相談したい内容はありますか？<span class="badge badge-optional">任意</span></label>
+            <textarea id="consultation_content" placeholder="相談したいことがあればご記入ください"></textarea>
+        </div>
+
+        <button class="submit-button" onclick="submitForm()">アンケートを送信する</button>
+    </div>
+
+    <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+    <script>
+        // LIFF IDを設定
+        const MY_LIFF_ID = '2008578881-xjvGQw3r';
+
+        document.addEventListener('DOMContentLoaded', function () {
+            liff.init({
+                liffId: MY_LIFF_ID
+            }).then(() => {
+                console.log('LIFF初期化成功');
+            }).catch((err) => {
+                console.error('LIFF初期化失敗', err);
+            });
+        });
+
+        /* --- ①お子様の人数選択ロジック --- */
+        function selectChildCount(count, btnElement) {
+            // ボタンのアクティブ切り替え
+            const buttons = document.getElementById('child-count-buttons').querySelectorAll('button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+
+            // 値を保存
+            document.getElementById('selected_child_count').value = count;
+
+            // 入力エリアをクリアして再生成
+            const container = document.getElementById('children-dates-area');
+            container.innerHTML = ''; // リセット
+            container.style.display = 'block'; // 表示
+
+            for (let i = 1; i <= count; i++) {
+                const div = document.createElement('div');
+                div.className = 'child-input-row';
+                
+                // ラベル（1人だけの場合はシンプルに、2人以上は「N人目の...」）
+                const labelText = (count === 1) 
+                    ? `①-1 生年月日を教えてください` 
+                    : `①-${i} ${i}人目の生年月日を教えてください`;
+
+                div.innerHTML = `
+                    <label class="sub-label">${labelText}<span class="badge badge-optional">任意</span></label>
+                    <input type="text" class="child-birthdate" data-index="${i}" placeholder="202X年X月X日">
+                `;
+                container.appendChild(div);
+            }
+        }
+
+        /* --- ②認知経路選択ロジック --- */
+        function selectSource(source, btnElement) {
+            // ボタンのアクティブ切り替え
+            const buttons = document.getElementById('source-buttons').querySelectorAll('button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+
+            // 値を保存
+            document.getElementById('selected_source').value = source;
+
+            // 詳細エリアの表示切り替え
+            const hospitalArea = document.getElementById('hospital_input_area');
+            const otherArea = document.getElementById('other_source_input_area');
+
+            // 一旦すべて隠す
+            hospitalArea.style.display = 'none';
+            otherArea.style.display = 'none';
+            // 入力値をクリアしない（誤操作で消えると不便なため、クリアは送信時または任意で）
+
+            if (source === '病院からの紹介') {
+                hospitalArea.style.display = 'block';
+            } else if (source === 'その他') {
+                otherArea.style.display = 'block';
+            }
+        }
+
+        /* --- 送信処理 --- */
+        function submitForm() {
+            // 値の取得
+            const childCount = document.getElementById('selected_child_count').value;
+            const source = document.getElementById('selected_source').value;
+            const desiredContent = document.getElementById('desired_content').value;
+            const consultationContent = document.getElementById('consultation_content').value;
+
+            // バリデーション（必須項目のチェック）
+            if (!childCount) { alert('①お子様の人数を選択してください。'); return; }
+            if (!source) { alert('②どこで当院を知りましたかを選択してください。'); return; }
+
+            // 生年月日の収集
+            let birthdatesText = "";
+            const birthdateInputs = document.querySelectorAll('.child-birthdate');
+            birthdateInputs.forEach(input => {
+                const idx = input.getAttribute('data-index');
+                const val = input.value;
+                if(val) {
+                    birthdatesText += `${idx}人目：${val}\n`;
+                }
+            });
+            if(birthdatesText === "") birthdatesText = "回答なし";
+
+            // 詳細情報の収集（病院名 or その他）
+            let sourceDetailText = "";
+            if (source === '病院からの紹介') {
+                const hosp = document.getElementById('hospital_name').value;
+                if(hosp) sourceDetailText = `(病院名：${hosp})`;
+            } else if (source === 'その他') {
+                const other = document.getElementById('other_source_detail').value;
+                if(other) sourceDetailText = `(詳細：${other})`;
+            }
+
+            // LINE送信用のメッセージ作成
+            const messageText = `
+【アンケート回答】
+
+①お子様の人数
+${childCount}人
+
+[生年月日]
+${birthdatesText.trim()}
+
+②当院を知ったきっかけ
+${source}
+${sourceDetailText}
+
+③嬉しい配信
+${desiredContent || 'なし'}
+
+④助産師への相談
+${consultationContent || 'なし'}
+`.trim();
+
+            if (!liff.isInClient()) {
+                alert('この機能はLINEアプリ内でのみ動作します。\n\n送信内容確認：\n' + messageText);
+                return;
+            }
+
+            liff.sendMessages([{
+                type: 'text',
+                text: messageText
+            }]).then(() => {
+                alert('アンケートを送信しました。\nご協力ありがとうございます。');
+                liff.closeWindow();
+            }).catch((err) => {
+                console.error('送信エラー', err);
+                alert('送信に失敗しました。');
+            });
+        }
+    </script>
+</body>
+</html>
