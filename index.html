@@ -14,7 +14,7 @@
             /* おしゃれなカラーパレット定義 */
             --main-bg: #f9f8f6; /* 生成り色 */
             --card-bg: #ffffff;
-            --text-color: #5a524c; /* 温かみのある焦げ茶 */
+            --text-color: #5a524c; /* 真っ黒ではなく温かみのある焦げ茶 */
             --accent-green: #8a9a5b; /* セージグリーン */
             --accent-pink: #d8b4a0; /* ダスティピンク */
             --input-bg: #fdfdfd;
@@ -24,7 +24,7 @@
         body {
             font-family: 'Zen Maru Gothic', sans-serif;
             background-color: var(--main-bg);
-            /* 背景のノイズテクスチャ */
+            /* 背景にうっすらノイズ */
             background-image: 
                 linear-gradient(var(--main-bg), var(--main-bg)),
                 url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
@@ -38,7 +38,6 @@
             line-height: 1.6;
         }
 
-        /* フェードインアニメーション */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -57,7 +56,6 @@
             position: relative;
         }
 
-        /* 上部の装飾線 */
         .container::before {
             content: '';
             position: absolute;
@@ -129,8 +127,10 @@
             color: #999;
         }
 
+        /* 入力フィールド */
         input[type="text"],
         input[type="tel"],
+        select,
         textarea {
             width: 100%;
             padding: 14px;
@@ -142,9 +142,28 @@
             color: var(--text-color);
             transition: all 0.3s ease;
             font-family: 'Zen Maru Gothic', sans-serif;
+            appearance: none; /* スマホでのデフォルトスタイルリセット */
+        }
+        
+        /* Select矢印のカスタマイズ */
+        .select-wrapper {
+            position: relative;
+        }
+        .select-wrapper::after {
+            content: '\f078'; /* FontAwesome chevron-down */
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            color: #888;
+            pointer-events: none;
+            font-size: 12px;
         }
 
         input:focus,
+        select:focus,
         textarea:focus {
             border-color: var(--accent-green);
             background-color: #fff;
@@ -158,16 +177,15 @@
             line-height: 1.8;
         }
 
-        /* 選択ボタンのデザイン */
-        .select-buttons {
-            display: flex;
-            flex-wrap: wrap; /* 折り返しを許可 */
+        /* 選択ボタン（グリッドレイアウト） */
+        .select-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 2列 */
             gap: 10px;
         }
 
-        .select-buttons button {
-            flex: 1;
-            padding: 12px;
+        .select-grid button {
+            padding: 14px 10px;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             background-color: #fff;
@@ -176,44 +194,36 @@
             font-size: 14px;
             font-family: 'Zen Maru Gothic', sans-serif;
             transition: all 0.3s;
-            min-width: 80px; /* スマホで小さくなりすぎないように */
         }
 
-        .select-buttons button:hover {
+        .select-grid button:hover {
             background-color: #fcfcfc;
             border-color: #ccc;
         }
 
-        .select-buttons button.active {
+        .select-grid button.active {
             background-color: var(--accent-green);
             color: white;
             border-color: var(--accent-green);
             box-shadow: 0 4px 10px rgba(138, 154, 91, 0.3);
         }
 
-        /* 動的表示エリア */
-        .dynamic-area {
+        /* 動的フィールドのコンテナ */
+        .dynamic-field-container {
             margin-top: 15px;
-            padding: 15px;
-            background-color: #fcfcfc;
-            border-radius: 8px;
-            border: 1px dashed var(--border-color);
+            padding-left: 15px;
+            border-left: 3px solid var(--accent-green);
             display: none; /* デフォルト非表示 */
             animation: fadeIn 0.5s ease;
         }
         
-        .sub-label {
+        .child-input-group {
+            margin-bottom: 15px;
+            animation: fadeIn 0.5s ease;
+        }
+        .child-input-group label {
             font-size: 13px;
-            color: #666;
-            margin-bottom: 5px;
-            display: block;
-        }
-        
-        .child-input-row {
-            margin-bottom: 10px;
-        }
-        .child-input-row:last-child {
-            margin-bottom: 0;
+            color: #888;
         }
 
         /* 送信ボタン */
@@ -243,12 +253,11 @@
             transform: translateY(0);
         }
 
-        /* スマホ向けの微調整 */
+        /* スマホ向け調整 */
         @media (max-width: 600px) {
             .container {
                 padding: 30px 20px;
                 box-shadow: none;
-                border-radius: 0;
             }
             body {
                 padding: 0;
@@ -257,8 +266,11 @@
             .container::before {
                 display: none;
             }
-            .select-buttons button {
-                padding: 10px;
+            .container {
+                border-radius: 0;
+            }
+            .select-grid {
+                grid-template-columns: 1fr; /* スマホでは1列で見やすく */
             }
         }
     </style>
@@ -266,63 +278,69 @@
 
 <body>
     <div class="container">
-        <h1>ママとも助産院<br><span>Enquete form</span></h1>
+        <h1>ママとも助産院<br><span>Survey form</span></h1>
 
         <div class="label-group">
             <label>①お子様の人数<span class="badge badge-required">必須</span></label>
-            <div class="select-buttons" id="child-count-buttons">
-                <button type="button" onclick="selectChildCount(1, this)">1人</button>
-                <button type="button" onclick="selectChildCount(2, this)">2人</button>
-                <button type="button" onclick="selectChildCount(3, this)">3人</button>
-                <button type="button" onclick="selectChildCount(4, this)">4人</button>
-                <button type="button" onclick="selectChildCount(5, this)">5人</button>
+            <div class="select-wrapper">
+                <select id="child_count" onchange="updateChildInputs()">
+                    <option value="" disabled selected>選択してください</option>
+                    <option value="1">1人</option>
+                    <option value="2">2人</option>
+                    <option value="3">3人</option>
+                    <option value="4">4人</option>
+                    <option value="5">5人</option>
+                </select>
             </div>
-            
-            <div id="children-dates-area" class="dynamic-area">
+
+            <div id="children_birthdays_container" style="margin-top: 20px;">
                 </div>
-            <input type="hidden" id="selected_child_count">
         </div>
+
+        <hr style="border: 0; border-top: 1px dashed #e6e3de; margin: 30px 0;">
 
         <div class="label-group">
             <label>②どこで当院を知りましたか？<span class="badge badge-required">必須</span></label>
-            <div class="select-buttons" id="source-buttons">
-                <button type="button" onclick="selectSource('知り合いからの紹介', this)">知り合いからの紹介</button>
-                <button type="button" onclick="selectSource('病院からの紹介', this)">病院からの紹介</button>
-                <button type="button" onclick="selectSource('行政からの紹介', this)">行政からの紹介</button>
-                <button type="button" onclick="selectSource('Googleマップで見つけた', this)">Googleマップで見つけた</button>
-                <button type="button" onclick="selectSource('ホームページを見た', this)">ホームページを見た</button>
-                <button type="button" onclick="selectSource('その他', this)">その他</button>
+            <div class="select-grid">
+                <button type="button" onclick="selectSource(this, '知り合いからの紹介')">知り合いからの紹介</button>
+                <button type="button" onclick="selectSource(this, '病院からの紹介')">病院からの紹介</button>
+                <button type="button" onclick="selectSource(this, '行政からの紹介')">行政からの紹介</button>
+                <button type="button" onclick="selectSource(this, 'Googleマップで見つけた')">Googleマップ</button>
+                <button type="button" onclick="selectSource(this, 'ホームページを見た')">ホームページ</button>
+                <button type="button" onclick="selectSource(this, 'その他')">その他</button>
             </div>
-            <input type="hidden" id="selected_source">
+            <input type="hidden" id="source_value">
 
-            <div id="hospital_input_area" class="dynamic-area">
-                <label class="sub-label">②-1 病院名を教えてください<span class="badge badge-optional">任意</span></label>
-                <input type="text" id="hospital_name" placeholder="例：〇〇病院">
+            <div id="hospital_input_area" class="dynamic-field-container">
+                <label>病院名を教えてください<span class="badge badge-optional">任意</span></label>
+                <input type="text" id="hospital_name" placeholder="例：〇〇産婦人科">
             </div>
 
-            <div id="other_source_input_area" class="dynamic-area">
-                <label class="sub-label">②-2 何で知ったか教えてください<span class="badge badge-optional">任意</span></label>
-                <input type="text" id="other_source_detail" placeholder="詳細をご記入ください">
+            <div id="other_input_area" class="dynamic-field-container">
+                <label>何で知ったか教えてください<span class="badge badge-optional">任意</span></label>
+                <input type="text" id="other_detail" placeholder="詳細をご記入ください">
             </div>
+        </div>
+
+        <hr style="border: 0; border-top: 1px dashed #e6e3de; margin: 30px 0;">
+
+        <div class="label-group">
+            <label>③どのような配信が届くと嬉しいですか？<br><span class="badge badge-optional">任意</span></label>
+            <textarea id="desired_content" placeholder="例：産後のケア方法、離乳食のレシピなど"></textarea>
         </div>
 
         <div class="label-group">
-            <label>③どのような配信が届くと嬉しいですか？<span class="badge badge-optional">任意</span></label>
-            <textarea id="desired_content" placeholder="例：イベント情報、育児コラムなど"></textarea>
+            <label>④助産師に相談したい内容はありますか？<br><span class="badge badge-optional">任意</span></label>
+            <textarea id="consultation_content" placeholder="例：授乳のタイミングについて悩んでいます。"></textarea>
         </div>
 
-        <div class="label-group">
-            <label>④助産師に相談したい内容はありますか？<span class="badge badge-optional">任意</span></label>
-            <textarea id="consultation_content" placeholder="相談したいことがあればご記入ください"></textarea>
-        </div>
-
-        <button class="submit-button" onclick="submitForm()">アンケートを送信する</button>
+        <button class="submit-button" onclick="submitForm()">内容を送信する</button>
     </div>
 
     <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
     <script>
-        // LIFF IDを設定
-        const MY_LIFF_ID = '2008578881-xjvGQw3r';
+        // LIFF ID (既存のものを使用)
+        const MY_LIFF_ID = '2008658957-jrJ2VabL';
 
         document.addEventListener('DOMContentLoaded', function () {
             liff.init({
@@ -334,121 +352,117 @@
             });
         });
 
-        /* --- ①お子様の人数選択ロジック --- */
-        function selectChildCount(count, btnElement) {
-            // ボタンのアクティブ切り替え
-            const buttons = document.getElementById('child-count-buttons').querySelectorAll('button');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            btnElement.classList.add('active');
+        // ①お子様の人数変更時の処理
+        function updateChildInputs() {
+            const count = parseInt(document.getElementById('child_count').value);
+            const container = document.getElementById('children_birthdays_container');
+            
+            // コンテナを一旦クリア
+            container.innerHTML = '';
 
-            // 値を保存
-            document.getElementById('selected_child_count').value = count;
+            if (!count) return;
 
-            // 入力エリアをクリアして再生成
-            const container = document.getElementById('children-dates-area');
-            container.innerHTML = ''; // リセット
-            container.style.display = 'block'; // 表示
-
+            // 人数分ループして入力欄を生成
             for (let i = 1; i <= count; i++) {
                 const div = document.createElement('div');
-                div.className = 'child-input-row';
+                div.className = 'child-input-group';
                 
-                // ラベル（1人だけの場合はシンプルに、2人以上は「N人目の...」）
-                const labelText = (count === 1) 
-                    ? `①-1 生年月日を教えてください` 
-                    : `①-${i} ${i}人目の生年月日を教えてください`;
-
+                // ラベルの文言調整（1人の場合は「お子様」、2人以上は「1人目」等の表記）
+                const labelText = (count === 1) ? 'お子様の生年月日' : `${i}人目の生年月日`;
+                
                 div.innerHTML = `
-                    <label class="sub-label">${labelText}<span class="badge badge-optional">任意</span></label>
-                    <input type="text" class="child-birthdate" data-index="${i}" placeholder="202X年X月X日">
+                    <label>${labelText}<span class="badge badge-optional">任意</span></label>
+                    <input type="text" class="child-birthday" data-index="${i}" placeholder="例：2023年4月1日">
                 `;
                 container.appendChild(div);
             }
         }
 
-        /* --- ②認知経路選択ロジック --- */
-        function selectSource(source, btnElement) {
-            // ボタンのアクティブ切り替え
-            const buttons = document.getElementById('source-buttons').querySelectorAll('button');
+        // ②認知経路選択時の処理
+        function selectSource(element, value) {
+            // ボタンのアクティブ状態切り替え
+            const buttons = element.parentElement.querySelectorAll('button');
             buttons.forEach(btn => btn.classList.remove('active'));
-            btnElement.classList.add('active');
-
+            element.classList.add('active');
+            
             // 値を保存
-            document.getElementById('selected_source').value = source;
+            document.getElementById('source_value').value = value;
 
-            // 詳細エリアの表示切り替え
+            // 条件分岐表示の制御
             const hospitalArea = document.getElementById('hospital_input_area');
-            const otherArea = document.getElementById('other_source_input_area');
+            const otherArea = document.getElementById('other_input_area');
+            const hospitalInput = document.getElementById('hospital_name');
+            const otherInput = document.getElementById('other_detail');
 
-            // 一旦すべて隠す
+            // 一旦全て非表示＆クリア
             hospitalArea.style.display = 'none';
             otherArea.style.display = 'none';
-            // 入力値をクリアしない（誤操作で消えると不便なため、クリアは送信時または任意で）
 
-            if (source === '病院からの紹介') {
+            if (value === '病院からの紹介') {
                 hospitalArea.style.display = 'block';
-            } else if (source === 'その他') {
+                hospitalInput.focus();
+            } else if (value === 'その他') {
                 otherArea.style.display = 'block';
+                otherInput.focus();
             }
         }
 
-        /* --- 送信処理 --- */
+        // 送信処理
         function submitForm() {
             // 値の取得
-            const childCount = document.getElementById('selected_child_count').value;
-            const source = document.getElementById('selected_source').value;
+            const childCount = document.getElementById('child_count').value;
+            const sourceValue = document.getElementById('source_value').value;
             const desiredContent = document.getElementById('desired_content').value;
             const consultationContent = document.getElementById('consultation_content').value;
 
-            // バリデーション（必須項目のチェック）
+            // バリデーション（必須項目チェック）
             if (!childCount) { alert('①お子様の人数を選択してください。'); return; }
-            if (!source) { alert('②どこで当院を知りましたかを選択してください。'); return; }
+            if (!sourceValue) { alert('②当院を知ったきっかけを選択してください。'); return; }
 
-            // 生年月日の収集
-            let birthdatesText = "";
-            const birthdateInputs = document.querySelectorAll('.child-birthdate');
-            birthdateInputs.forEach(input => {
-                const idx = input.getAttribute('data-index');
+            // お子様の生年月日情報の収集
+            let childrenInfo = '';
+            const birthdayInputs = document.querySelectorAll('.child-birthday');
+            birthdayInputs.forEach(input => {
+                const index = input.getAttribute('data-index');
                 const val = input.value;
-                if(val) {
-                    birthdatesText += `${idx}人目：${val}\n`;
+                if (val) {
+                    // 1人のときは「お子様」、複数のときは「X人目」
+                    const label = (birthdayInputs.length === 1) ? 'お子様' : `${index}人目`;
+                    childrenInfo += `・${label}: ${val}\n`;
                 }
             });
-            if(birthdatesText === "") birthdatesText = "回答なし";
+            if (!childrenInfo) childrenInfo = '（入力なし）';
 
-            // 詳細情報の収集（病院名 or その他）
-            let sourceDetailText = "";
-            if (source === '病院からの紹介') {
-                const hosp = document.getElementById('hospital_name').value;
-                if(hosp) sourceDetailText = `(病院名：${hosp})`;
-            } else if (source === 'その他') {
-                const other = document.getElementById('other_source_detail').value;
-                if(other) sourceDetailText = `(詳細：${other})`;
+            // 認知経路の詳細情報の収集
+            let sourceDetail = sourceValue;
+            if (sourceValue === '病院からの紹介') {
+                const hName = document.getElementById('hospital_name').value;
+                if (hName) sourceDetail += `\n（病院名: ${hName}）`;
+            } else if (sourceValue === 'その他') {
+                const oDetail = document.getElementById('other_detail').value;
+                if (oDetail) sourceDetail += `\n（詳細: ${oDetail}）`;
             }
 
-            // LINE送信用のメッセージ作成
+            // 送信メッセージの作成
             const messageText = `
-【アンケート回答】
+【ママとも助産院 アンケート回答】
 
-①お子様の人数
-${childCount}人
-
-[生年月日]
-${birthdatesText.trim()}
+①お子様の人数：${childCount}人
+${childrenInfo.trim()}
 
 ②当院を知ったきっかけ
-${source}
-${sourceDetailText}
+${sourceDetail}
 
-③嬉しい配信
-${desiredContent || 'なし'}
+③希望する配信内容
+${desiredContent || '（特になし）'}
 
-④助産師への相談
-${consultationContent || 'なし'}
+④相談したい内容
+${consultationContent || '（特になし）'}
 `.trim();
 
+            // LIFFで送信
             if (!liff.isInClient()) {
-                alert('この機能はLINEアプリ内でのみ動作します。\n\n送信内容確認：\n' + messageText);
+                alert('この機能はLINEアプリ内でのみ動作します。\n\n送信内容プレビュー:\n' + messageText);
                 return;
             }
 
